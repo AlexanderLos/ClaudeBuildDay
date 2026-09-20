@@ -9,7 +9,7 @@ type Message = { role: "user" | "bot"; text: string };
 
 const GREETING: Message = {
   role: "bot",
-  text: 'Tell me where you are and what you need — e.g. "I\'m in Isla Verde with a baby and no car."',
+  text: 'Tell me where you are and what you need, example: "I\'m in Isla Verde with a baby and no car."',
 };
 
 export function WaterChat({ onFocus }: { onFocus: (siteId: string) => void }) {

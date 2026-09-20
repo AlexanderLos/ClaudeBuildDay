@@ -116,12 +116,20 @@ export function WaterMap({
       }).addTo(map);
 
       for (const site of SITES) {
-        const marker = L.circleMarker([site.lat, site.lng], {
-          radius: site.recommended ? 11 : 8,
-          color: "#ffffff",
-          weight: 2,
-          fillColor: siteColor(site),
-          fillOpacity: 0.95,
+        const icon = L.divIcon({
+          className: "",
+          html:
+            `<div class="site-marker${site.recommended ? " site-marker--recommended" : ""}" ` +
+            `style="--marker-color:${siteColor()}">` +
+            `<span class="site-marker__ripple"></span><span class="site-marker__dot"></span></div>`,
+          iconSize: [30, 30],
+          iconAnchor: [15, 15],
+          popupAnchor: [0, -14],
+        });
+        const marker = L.marker([site.lat, site.lng], {
+          icon,
+          riseOnHover: true,
+          zIndexOffset: site.recommended ? 600 : 400,
         })
           .addTo(map)
           .bindPopup(

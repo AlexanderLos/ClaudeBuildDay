@@ -55,9 +55,9 @@ export const SITES: Site[] = [
   },
 ];
 
-export function siteColor(site: Site): string {
-  if (site.recommended) return "#1F8A5B";
-  return site.type === "official" ? "#1A86C6" : "#6B4FBB";
+export function siteColor(): string {
+  // All water-point markers are red for maximum urgency/visibility.
+  return "#dc2626";
 }
 
 export function typeLabel(site: Site): string {
