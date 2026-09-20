@@ -7,7 +7,7 @@ import type { Confidence, ErrorCode, ReviewStatus } from "@/lib/contracts";
  */
 export const en = {
   common: {
-    appName: "Agua Vecina",
+    appName: "Water Neighbor",
     prototypeBadge: "Prototype",
     demoDataBadge: "Demo data",
     skipToContent: "Skip to content",
@@ -23,7 +23,7 @@ export const en = {
     ariaLabel: "Switch language to Español (Spanish)",
   },
   home: {
-    heading: "Agua Vecina",
+    heading: "Water Neighbor",
     tagline: "Clear, local water information drawn from official notices.",
     status: "Under construction",
     body: "The resident experience is coming next. Coordinators can already import an official notice.",
@@ -32,7 +32,7 @@ export const en = {
   coordinate: {
     pageTitle: "Import official notice",
     intro:
-      "Upload the official notice as a PDF. Agua Vecina extracts communities, dates and locations for you to review before anything is published.",
+      "Upload the official notice as a PDF. Water Neighbor extracts communities, dates and locations for you to review before anything is published.",
     upload: {
       regionLabel: "Notice upload",
       dropTitle: "Drop the PDF here",
@@ -45,7 +45,7 @@ export const en = {
       removeFile: "Remove file",
       replaceFile: "Choose a different file",
       extract: "Extract notice",
-      privacy: "The PDF is sent to Claude for extraction and is not stored by Agua Vecina.",
+      privacy: "The PDF is sent to Claude for extraction and is not stored by Water Neighbor.",
     },
     demo: {
       loadSample: "Load sample notice",
@@ -135,7 +135,7 @@ export const en = {
       listedInNotice: "Listed in the official notice from {organization}",
       listedInDemo: "Listed in the demo sample notice",
       disclaimer:
-        "Agua Vecina does not confirm that water is currently available at any location. Check the official notice for updates.",
+        "Water Neighbor does not confirm that water is currently available at any location. Check the official notice for updates.",
       localOnly: "Saved only on this device. Nothing was sent to residents.",
       backHome: "Go to Find water",
       importAnother: "Import another notice",

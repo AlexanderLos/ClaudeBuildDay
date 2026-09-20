@@ -41,7 +41,7 @@ export function WaterChat({ onFocus }: { onFocus: (siteId: string) => void }) {
                 <path d="M12 2.5S5.5 9.5 5.5 14a6.5 6.5 0 0 0 13 0C18.5 9.5 12 2.5 12 2.5z" />
               </svg>
             </span>
-            <h1 className="text-lg font-semibold tracking-tight">Agua Vecina</h1>
+            <h1 className="text-lg font-semibold tracking-tight">Water Neighbor</h1>
           </div>
           <div className="flex items-center gap-2">
             <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ring-1 ring-white/30">
