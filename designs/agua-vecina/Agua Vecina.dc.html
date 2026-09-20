@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+<style>
+body{margin:0;background:#EFEBE4;font-family:"Instrument Sans",system-ui,sans-serif;color:#0F1F3D;-webkit-font-smoothing:antialiased}
+a{color:#1A86C6}a:hover{color:#156FA8}
+*{box-sizing:border-box}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#0F1F3D;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 "Instrument Sans",system-ui,sans-serif;color:#0F1F3D}
+.dv-opts{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(15,31,61,.09);color:#0F1F3D;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:center;gap:8px;font:400 12px/1.3 "Instrument Sans",system-ui,sans-serif;color:rgba(15,31,61,.6)}
+.dv-card{max-width:100%;background:#FAF7F2;border:1px solid rgba(15,31,61,.1);border-radius:10px;box-shadow:0 1px 3px rgba(15,31,61,.08);overflow:hidden}
+.dv-opt:target .dv-oid{background:#1A86C6;color:#fff}
+.dv-next{margin:22px 0 0;font:12px/1.5 "Instrument Sans",system-ui,sans-serif;color:rgba(15,31,61,.55)}
+@keyframes avBar{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+@keyframes avSpin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Agua Vecina — Find Water, Coordinate, mobile</span></div>
+<div style="max-width:760px;margin:-8px 0 26px;font-size:12.5px;line-height:1.55;color:rgba(15,31,61,.7)">
+<div style="font-weight:600;color:#0F1F3D;margin-bottom:4px">Assumptions and decisions</div>
+Real map (OpenStreetMap data, CARTO light tiles) centered on San Juan–Carolina, desaturated so the markers carry the color. Instrument Sans for the interface; DM Serif Display only in the wordmark and the main question. The resident’s location is shown as an ~550 m "approximate area", never an address. One warm background tone (#FAF7F2) and 10–14 px radii throughout. All three screens are interactive: markers select, "Request delivery" confirms, and the Coordinate state switches with the buttons under its label.
+</div>
+<div class="dv-opts">
+
+<!-- ═══════════ 1a DESKTOP · ENCONTRAR AGUA ═══════════ -->
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Find Water · desktop 1440×900</div>
+<div class="dv-card" style="width:1440px;height:900px;display:flex;flex-direction:column;background:#FAF7F2" data-screen-label="Find Water (desktop)">
+  <header style="height:56px;flex:none;display:flex;align-items:center;gap:36px;padding:0 24px;border-bottom:1px solid #E8E1D6;background:#FFFDFA">
+    <div style="display:flex;align-items:center;gap:9px">
+      <div style="width:28px;height:28px;border-radius:9px;background:#1A86C6;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2.5C9 6.8 6 10 6 13.8a6 6 0 0 0 12 0C18 10 15 6.8 12 2.5z" fill="#fff"></path></svg></div>
+      <span style="font-family:'DM Serif Display',Georgia,serif;font-size:21px;letter-spacing:-.01em">Agua Vecina</span>
+    </div>
+    <nav style="display:flex;gap:26px;height:100%;font-size:14.5px;font-weight:500">
+      <a href="#1a" style="display:flex;align-items:center;color:#0F1F3D;text-decoration:none;border-bottom:2px solid #1A86C6;margin-bottom:-1px">Find water</a>
+      <a href="#1c" style="display:flex;align-items:center;color:#4B5875;text-decoration:none">Coordinate</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:7px;font-size:12px;color:#9A6206;background:#FBF1DD;padding:5px 10px;border-radius:999px"><span style="width:7px;height:7px;border-radius:50%;background:#E39B1B"></span>Demo data</div>
+  </header>
+  <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 432px">
+    <div style="position:relative;min-width:0">
+      <x-import component-from-global-scope="agua-map" from="./agua-map.js" selected="escorial" showroute="{{ showRoute }}" calm="{{ calmTiles }}" hint-size="100%,100%" style="position:absolute;inset:0"></x-import>
+    </div>
+    <aside style="display:flex;flex-direction:column;min-height:0;border-left:1px solid #E8E1D6;background:#FFFDFA">
+      <div style="padding:26px 26px 18px">
+        <h2 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:27px;line-height:1.15;letter-spacing:-.01em">Where do you need water?</h2>
+        <p style="margin:8px 0 0;font-size:14px;line-height:1.45;color:#4B5875;text-wrap:pretty">Describe your situation and we’ll find the most practical option.</p>
+      </div>
+      <div style="flex:1;min-height:0;overflow:auto;padding:0 26px 16px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+          <span style="font-size:11px;color:#4B5875;letter-spacing:.04em;text-transform:uppercase">You</span>
+          <p style="margin:0;max-width:92%;background:#F1ECE3;border-radius:12px 12px 4px 12px;padding:10px 14px;font-size:14.5px;line-height:1.45;text-wrap:pretty">“There are four of us in Carolina, we have a baby, we’ve had no water since yesterday and we don’t have a car.”</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:#4B5875;letter-spacing:.04em;text-transform:uppercase"><span style="width:16px;height:16px;border-radius:5px;background:#1A86C6;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="10" height="10"><path d="M12 2.5C9 6.8 6 10 6 13.8a6 6 0 0 0 12 0C18 10 15 6.8 12 2.5z" fill="#fff"></path></svg></span>Agua Vecina understood</div>
+          <div style="font-size:13.5px;color:#0F1F3D;display:flex;flex-wrap:wrap;gap:6px 0;line-height:1.4">
+            <span style="padding:3px 9px;border:1px solid #E8E1D6;border-radius:999px;background:#FAF7F2">Carolina</span><span style="padding:3px 4px;color:#B4AC9E">·</span>
+            <span style="padding:3px 9px;border:1px solid #E8E1D6;border-radius:999px;background:#FAF7F2">4 people</span><span style="padding:3px 4px;color:#B4AC9E">·</span>
+            <span style="padding:3px 9px;border:1px solid #E8E1D6;border-radius:999px;background:#FAF7F2">baby at home</span><span style="padding:3px 4px;color:#B4AC9E">·</span>
+            <span style="padding:3px 9px;border:1px solid #E8E1D6;border-radius:999px;background:#FAF7F2">no transportation</span>
+          </div>
+        </div>
+        <div style="border:1px solid #CFE7D9;background:#F4FBF7;border-radius:14px;padding:18px 20px 16px;box-shadow:0 1px 2px rgba(15,31,61,.04)">
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.08em;color:#1F8A5B">
+            <span style="width:18px;height:18px;border-radius:50%;background:#1F8A5B;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="11" height="11"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>BEST OPTION
+          </div>
+          <div style="margin-top:8px;font-size:21px;font-weight:600;letter-spacing:-.01em">Community delivery</div>
+          <ul style="list-style:none;margin:12px 0 0;padding:0;display:grid;gap:7px;font-size:14px;line-height:1.4">
+            <li style="display:flex;gap:10px"><span style="width:5px;height:5px;border-radius:50%;background:#1F8A5B;flex:none;margin-top:8px"></span>Water from a verified official pickup point</li>
+            <li style="display:flex;gap:10px"><span style="width:5px;height:5px;border-radius:50%;background:#1F8A5B;flex:none;margin-top:8px"></span>Estimated delivery: 4:00–4:30 p.m.</li>
+            <li style="display:flex;gap:10px"><span style="width:5px;height:5px;border-radius:50%;background:#1F8A5B;flex:none;margin-top:8px"></span>2.1 miles away</li>
+            <li style="display:flex;gap:10px"><span style="width:5px;height:5px;border-radius:50%;background:#1F8A5B;flex:none;margin-top:8px"></span>Request prioritized: baby at home</li>
+          </ul>
+          <sc-if value="{{ notRequested }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:16px;display:flex;align-items:center;gap:16px">
+              <button onClick="{{ request }}" style="flex:none;height:44px;padding:0 20px;border:0;border-radius:11px;background:#1A86C6;color:#fff;font:600 15px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#156FA8">Request delivery</button>
+              <a href="#1a" style="font-size:14px;font-weight:500;color:#1A86C6;text-decoration:none">See other options</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{ requested }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:16px;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;background:#1F8A5B;color:#fff">
+              <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <div style="font-size:14px;line-height:1.35"><strong>Delivery requested.</strong> The Villa Carolina team confirmed your request. We’ll let you know when the vehicle leaves.</div>
+            </div>
+          </sc-if>
+        </div>
+        <div style="padding:14px 4px 4px;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.08em;color:#1A86C6"><span style="width:10px;height:10px;border-radius:50%;background:#1A86C6"></span>VERIFIED OFFICIAL PICKUP</div>
+            <span style="font-size:12.5px;color:#4B5875">1.4 miles</span>
+          </div>
+          <div style="font-size:16px;font-weight:600">Pozo Escorial</div>
+          <div style="font-size:13.5px;line-height:1.5;color:#4B5875">Open until 7:00 p.m. · Bring your own containers<br>No car: AMA bus route C45, about 25 min · Street-level access</div>
+          <a href="#1a" style="font-size:13.5px;font-weight:500;color:#1A86C6;text-decoration:none;margin-top:2px">View on map</a>
+        </div>
+      </div>
+      <div style="flex:none;padding:14px 26px 18px;border-top:1px solid #EFE9DF;background:#FFFDFA">
+        <div style="display:flex;align-items:center;gap:8px;height:48px;padding:0 6px 0 16px;border:1px solid #D9D1C4;border-radius:12px;background:#FAF7F2">
+          <span style="flex:1;font-size:14.5px;color:#8C94A8">Describe where you are and what you need…</span>
+          <button aria-label="Send" style="width:36px;height:36px;border:0;border-radius:9px;background:#1A86C6;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:#156FA8"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></button>
+        </div>
+        <div style="margin-top:9px;display:flex;align-items:center;gap:6px;font-size:12px;color:#4B5875"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#4B5875" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>Your exact location stays private.</div>
+      </div>
+    </aside>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ 1b MÓVIL ═══════════ -->
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Find Water · mobile (tap the sheet to expand)</div>
+<div style="width:402px" data-screen-label="Find Water (mobile)">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+  <div style="position:relative;height:100%;background:#FAF7F2;font-family:'Instrument Sans',system-ui,sans-serif;color:#0F1F3D;overflow:hidden">
+    <x-import component-from-global-scope="agua-map" from="./agua-map.js" showroute="{{ showRoute }}" calm="{{ calmTiles }}" compact="true" hint-size="100%,100%" style="position:absolute;inset:0;z-index:0"></x-import>
+    <div style="position:absolute;top:58px;left:14px;right:14px;z-index:1000;display:flex;align-items:center;justify-content:space-between;pointer-events:none">
+      <div style="display:flex;align-items:center;gap:8px;background:#FFFDFA;border:1px solid #E8E1D6;border-radius:999px;padding:6px 12px 6px 6px;box-shadow:0 2px 8px rgba(15,31,61,.1)">
+        <div style="width:24px;height:24px;border-radius:8px;background:#1A86C6;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M12 2.5C9 6.8 6 10 6 13.8a6 6 0 0 0 12 0C18 10 15 6.8 12 2.5z" fill="#fff"></path></svg></div>
+        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:17px">Agua Vecina</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#9A6206;background:#FBF1DD;padding:5px 9px;border-radius:999px;border:1px solid #F1DDB0"><span style="width:6px;height:6px;border-radius:50%;background:#E39B1B"></span>Demo</div>
+    </div>
+    <div onClick="{{ toggleSheet }}" style="position:absolute;left:0;right:0;bottom:0;z-index:1000;height:{{ sheetHeight }};background:#FFFDFA;border-radius:18px 18px 0 0;box-shadow:0 -6px 24px rgba(15,31,61,.14);display:flex;flex-direction:column;transition:height .35s cubic-bezier(.2,.8,.2,1);cursor:grab">
+      <div style="flex:none;padding:8px 0 2px;display:flex;justify-content:center"><span style="width:40px;height:5px;border-radius:999px;background:#D9D1C4"></span></div>
+      <div style="flex:none;padding:8px 20px 12px">
+        <h2 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:22px;line-height:1.15">Where do you need water?</h2>
+        <p style="margin:5px 0 0;font-size:13px;line-height:1.4;color:#4B5875">Describe your situation and we’ll find the most practical option.</p>
+      </div>
+      <div style="flex:1;min-height:0;overflow:auto;padding:0 20px 12px;display:flex;flex-direction:column;gap:14px">
+        <p style="margin:0;align-self:flex-end;max-width:90%;background:#F1ECE3;border-radius:12px 12px 4px 12px;padding:9px 12px;font-size:13.5px;line-height:1.4">“There are four of us in Carolina, we have a baby, we’ve had no water since yesterday and we don’t have a car.”</p>
+        <div style="font-size:12.5px;color:#4B5875;line-height:1.4"><span style="font-weight:600;color:#0F1F3D">Understood:</span> Carolina · 4 people · baby at home · no transportation</div>
+        <div style="border:1px solid #CFE7D9;background:#F4FBF7;border-radius:14px;padding:14px 16px">
+          <div style="display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;letter-spacing:.08em;color:#1F8A5B"><span style="width:16px;height:16px;border-radius:50%;background:#1F8A5B;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="10" height="10"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>BEST OPTION</div>
+          <div style="margin-top:6px;font-size:18px;font-weight:600">Community delivery</div>
+          <div style="margin-top:8px;font-size:13px;line-height:1.5;color:#0F1F3D">Water from a verified official pickup point<br>Estimated delivery: 4:00–4:30 p.m. · 2.1 miles<br>Request prioritized: baby at home</div>
+          <div style="margin-top:14px;display:flex;align-items:center;gap:14px">
+            <button style="flex:1;height:46px;border:0;border-radius:11px;background:#1A86C6;color:#fff;font:600 15px 'Instrument Sans',system-ui,sans-serif">Request delivery</button>
+            <a href="#1b" style="font-size:13.5px;font-weight:500;color:#1A86C6;text-decoration:none;white-space:nowrap">Other options</a>
+          </div>
+        </div>
+        <div style="padding:4px 2px 6px;display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:10.5px;font-weight:700;letter-spacing:.08em;color:#1A86C6"><span style="display:flex;align-items:center;gap:7px"><span style="width:9px;height:9px;border-radius:50%;background:#1A86C6"></span>VERIFIED OFFICIAL PICKUP</span><span style="font-weight:400;letter-spacing:0;color:#4B5875;font-size:12px">1.4 miles</span></div>
+          <div style="font-size:15px;font-weight:600">Pozo Escorial</div>
+          <div style="font-size:12.5px;line-height:1.45;color:#4B5875">Open until 7:00 p.m. · AMA bus C45, ~25 min · Street-level access</div>
+        </div>
+      </div>
+      <div style="flex:none;padding:10px 16px 38px;border-top:1px solid #EFE9DF;background:#FFFDFA">
+        <div style="display:flex;align-items:center;gap:8px;height:46px;padding:0 5px 0 14px;border:1px solid #D9D1C4;border-radius:12px;background:#FAF7F2">
+          <span style="flex:1;font-size:14px;color:#8C94A8">Describe where you are and what you need…</span>
+          <span style="width:36px;height:36px;border-radius:9px;background:#1A86C6;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></span>
+        </div>
+        <div style="margin-top:7px;font-size:11.5px;color:#4B5875;text-align:center">Your exact location stays private.</div>
+      </div>
+    </div>
+  </div>
+</x-import>
+</div>
+</div>
+
+<!-- ═══════════ 1c COORDINAR ═══════════ -->
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Coordinate · import official notice 1440×900
+  <span style="margin-left:10px;display:inline-flex;border:1px solid rgba(15,31,61,.15);border-radius:6px;overflow:hidden;font-size:11px">
+    <button onClick="{{ setProcessing }}" style="border:0;padding:4px 9px;cursor:pointer;background:{{ bgProcessing }};color:#0F1F3D;font:inherit">Processing</button>
+    <button onClick="{{ setReview }}" style="border:0;border-left:1px solid rgba(15,31,61,.15);padding:4px 9px;cursor:pointer;background:{{ bgReview }};color:#0F1F3D;font:inherit">Review</button>
+    <button onClick="{{ setPublished }}" style="border:0;border-left:1px solid rgba(15,31,61,.15);padding:4px 9px;cursor:pointer;background:{{ bgPublished }};color:#0F1F3D;font:inherit">Published</button>
+  </span>
+</div>
+<div class="dv-card" style="width:1440px;height:900px;display:flex;flex-direction:column;background:#FAF7F2" data-screen-label="Coordinate (desktop)">
+  <header style="height:56px;flex:none;display:flex;align-items:center;gap:36px;padding:0 24px;border-bottom:1px solid #E8E1D6;background:#FFFDFA">
+    <div style="display:flex;align-items:center;gap:9px">
+      <div style="width:28px;height:28px;border-radius:9px;background:#1A86C6;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2.5C9 6.8 6 10 6 13.8a6 6 0 0 0 12 0C18 10 15 6.8 12 2.5z" fill="#fff"></path></svg></div>
+      <span style="font-family:'DM Serif Display',Georgia,serif;font-size:21px;letter-spacing:-.01em">Agua Vecina</span>
+    </div>
+    <nav style="display:flex;gap:26px;height:100%;font-size:14.5px;font-weight:500">
+      <a href="#1a" style="display:flex;align-items:center;color:#4B5875;text-decoration:none">Find water</a>
+      <a href="#1c" style="display:flex;align-items:center;color:#0F1F3D;text-decoration:none;border-bottom:2px solid #1A86C6;margin-bottom:-1px">Coordinate</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:7px;font-size:12px;color:#9A6206;background:#FBF1DD;padding:5px 10px;border-radius:999px"><span style="width:7px;height:7px;border-radius:50%;background:#E39B1B"></span>Demo data</div>
+  </header>
+  <div style="flex:1;min-height:0;display:grid;grid-template-columns:400px 1fr">
+    <div style="padding:32px 28px;border-right:1px solid #E8E1D6;display:flex;flex-direction:column;gap:22px">
+      <div>
+        <h2 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:26px;line-height:1.15">Import official notice</h2>
+        <p style="margin:8px 0 0;font-size:14px;line-height:1.45;color:#4B5875;text-wrap:pretty">Upload the AAA PDF. Agua Vecina extracts locations, hours and communities for you to review before publishing.</p>
+      </div>
+      <div style="border:1.5px dashed #C9C0B1;border-radius:14px;padding:26px 20px;text-align:center;background:#FFFDFA;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#1A86C6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"></path><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"></path></svg>
+        <div style="font-size:14.5px;font-weight:600">Drop the PDF here</div>
+        <div style="font-size:13px;color:#4B5875">or <a href="#1c" style="color:#1A86C6;text-decoration:none;font-weight:500">choose a file</a> · up to 20 MB</div>
+      </div>
+      <div style="border:1px solid #E8E1D6;border-radius:12px;background:#FFFDFA;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:38px;height:44px;border-radius:6px;background:#FBF1DD;border:1px solid #F1DDB0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;font-size:9px;font-weight:700;color:#9A6206;letter-spacing:.05em">PDF</div>
+          <div style="min-width:0">
+            <div style="font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Plan_de_interrupciones_AAA.pdf</div>
+            <div style="font-size:12.5px;color:#4B5875;margin-top:2px">1.8 MB · 4 pages · uploaded 2 min ago</div>
+          </div>
+        </div>
+        <sc-if value="{{ isProcessing }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:#0F1F3D"><span style="width:14px;height:14px;border-radius:50%;border:2px solid #CFE3F2;border-top-color:#1A86C6;animation:avSpin .9s linear infinite;flex:none"></span>Extracting locations, hours and affected communities…</div>
+            <div style="height:4px;border-radius:999px;background:#E4F1FA;overflow:hidden;position:relative"><span style="position:absolute;top:0;left:0;width:40%;height:100%;border-radius:999px;background:#1A86C6;animation:avBar 1.6s ease-in-out infinite"></span></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ notProcessing }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:#4B5875"><span style="width:16px;height:16px;border-radius:50%;background:#1A86C6;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg viewBox="0 0 24 24" width="10" height="10"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>Extraction complete · 6 fields, 2 need review</div>
+        </sc-if>
+      </div>
+      <div style="margin-top:auto;font-size:12.5px;line-height:1.55;color:#4B5875;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;gap:9px;align-items:center"><span style="width:10px;height:10px;border-radius:50%;background:#1A86C6;flex:none"></span>Verified: matches the notice text</div>
+        <div style="display:flex;gap:9px;align-items:center"><span style="width:10px;height:10px;border-radius:50%;background:#E39B1B;flex:none"></span>Review: ambiguous or incomplete in the PDF</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;min-height:0">
+      <sc-if value="{{ isProcessing }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#4B5875;padding:40px">
+          <span style="width:34px;height:34px;border-radius:50%;border:3px solid #CFE3F2;border-top-color:#1A86C6;animation:avSpin .9s linear infinite"></span>
+          <div style="font-size:16px;color:#0F1F3D;font-weight:500">Extracting locations, hours and affected communities…</div>
+          <div style="font-size:13.5px">Page 2 of 4 · Usually takes under a minute</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ notProcessing }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;min-height:0;overflow:auto;padding:32px 40px 24px;display:flex;flex-direction:column;gap:22px">
+          <sc-if value="{{ isPublished }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;background:#1F8A5B;color:#fff">
+              <svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <div style="font-size:15px;line-height:1.35"><strong>Notice published.</strong> 3 verified locations were added to the Find Water map.</div>
+              <a href="#1a" style="margin-left:auto;color:#fff;font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap;border:1px solid rgba(255,255,255,.5);padding:7px 12px;border-radius:8px">View on map</a>
+            </div>
+          </sc-if>
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+            <div>
+              <h3 style="margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em">Review extracted information</h3>
+              <div style="margin-top:4px;font-size:13.5px;color:#4B5875">AAA notice · Metro Region · Scheduled maintenance interruption</div>
+            </div>
+            <div style="display:flex;gap:14px;font-size:12.5px;color:#4B5875"><span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#1A86C6"></span>4 verified</span><span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#E39B1B"></span>2 to review</span></div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+            <div style="border:1px solid #E8E1D6;border-radius:12px;background:#FFFDFA;padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#4B5875">Affected communities</span><span style="display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:#1A86C6"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#1A86C6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>Verified</span></div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:13.5px"><span style="padding:4px 10px;border-radius:999px;background:#F1ECE3">Villa Carolina</span><span style="padding:4px 10px;border-radius:999px;background:#F1ECE3">Sabana Gardens</span><span style="padding:4px 10px;border-radius:999px;background:#F1ECE3">Country Club</span><span style="padding:4px 10px;border-radius:999px;background:#F1ECE3">Sabana Abajo</span></div>
+            </div>
+            <div style="border:1px solid #E8E1D6;border-radius:12px;background:#FFFDFA;padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#4B5875">Interruption dates</span><span style="display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:#1A86C6"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#1A86C6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>Verified</span></div>
+              <div style="font-size:15px;font-weight:500">Sat Sep 19, 6:00 a.m. → Mon Sep 21, 6:00 p.m.</div>
+              <div style="font-size:13px;color:#4B5875">Estimated duration: 60 hours</div>
+            </div>
+          </div>
+
+          <div style="border:1px solid #E8E1D6;border-radius:12px;background:#FFFDFA;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#4B5875">Official water locations</span><span style="display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:#9A6206"><span style="width:8px;height:8px;border-radius:50%;background:#E39B1B"></span>1 of 3 to review</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+              <div style="border:1px solid #E8E1D6;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:5px">
+                <div style="display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600"><span style="width:20px;height:20px;border-radius:50%;background:#1A86C6;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg viewBox="0 0 24 24" width="11" height="11"><path d="M12 2.5C9 6.8 6 10 6 13.8a6 6 0 0 0 12 0C18 10 15 6.8 12 2.5z" fill="#fff"></path></svg></span>Pozo Escorial</div>
+                <div style="font-size:13px;color:#4B5875;line-height:1.45">Rd. 887, Carolina · Placed on map</div>
+                <div style="font-size:11.5px;font-weight:600;color:#1A86C6">Verified</div>
+              </div>
+              <div style="border:1px solid #E8E1D6;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:5px">
+                <div style="display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600"><span style="width:20px;height:20px;border-radius:50%;background:#1A86C6;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg viewBox="0 0 24 24" width="11" height="11"><path d="M12 2.5C9 6.8 6 10 6 13.8a6 6 0 0 0 12 0C18 10 15 6.8 12 2.5z" fill="#fff"></path></svg></span>Julia de Burgos Park cistern</div>
+                <div style="font-size:13px;color:#4B5875;line-height:1.45">Roberto Clemente Ave., Carolina · Placed on map</div>
+                <div style="font-size:11.5px;font-weight:600;color:#1A86C6">Verified</div>
+              </div>
+              <div style="border:1px solid #F1DDB0;background:#FDF8EE;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:5px">
+                <div style="display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600"><span style="width:20px;height:20px;border-radius:50%;background:#E39B1B;display:inline-flex;align-items:center;justify-content:center;flex:none;color:#fff;font-size:13px;font-weight:700">?</span>Water truck, 65 de Infantería Ave.</div>
+                <div style="font-size:13px;color:#4B5875;line-height:1.45">PDF says “approx. km 5” · Confirm exact spot</div>
+                <div style="display:flex;gap:12px;font-size:11.5px;font-weight:600;color:#9A6206">Needs review <a href="#1c" style="color:#1A86C6;text-decoration:none">Place on map</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+            <div style="border:1px solid #F1DDB0;border-radius:12px;background:#FDF8EE;padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#4B5875">Operating hours</span><span style="display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:#9A6206"><span style="width:8px;height:8px;border-radius:50%;background:#E39B1B"></span>Needs review</span></div>
+              <div style="font-size:15px;font-weight:500">7:00 a.m. – 7:00 p.m.</div>
+              <div style="font-size:13px;color:#4B5875;line-height:1.45">The notice mentions “extended hours” without a closing time. <a href="#1c" style="color:#1A86C6;text-decoration:none;font-weight:500">Edit</a></div>
+            </div>
+            <div style="border:1px solid #E8E1D6;border-radius:12px;background:#FFFDFA;padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#4B5875">Resident instructions</span><span style="display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:#1A86C6"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#1A86C6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>Verified</span></div>
+              <div style="font-size:14px;line-height:1.5;text-wrap:pretty">Bring your own containers. Maximum 5 gallons per person. Priority for seniors and families with infants.</div>
+            </div>
+          </div>
+
+          <div style="border:1px solid #E8E1D6;border-radius:12px;background:#FFFDFA;padding:14px 18px;display:flex;align-items:center;gap:16px">
+            <span style="font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#4B5875;flex:none">Original source</span>
+            <span style="font-size:13.5px;color:#0F1F3D">Plan_de_interrupciones_AAA.pdf · pages 2–3 · published Sep 18, 2026 · acueductospr.com/avisos</span>
+            <span style="margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:#1A86C6"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#1A86C6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>Verified</span>
+          </div>
+        </div>
+        <div style="flex:none;display:flex;align-items:center;gap:18px;padding:16px 40px;border-top:1px solid #E8E1D6;background:#FFFDFA">
+          <sc-if value="{{ isReview }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ approve }}" style="height:44px;padding:0 22px;border:0;border-radius:11px;background:#1A86C6;color:#fff;font:600 15px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#156FA8">Approve and publish</button>
+            <a href="#1c" style="font-size:14px;font-weight:500;color:#4B5875;text-decoration:none">Save draft</a>
+            <span style="margin-left:auto;font-size:13px;color:#4B5875">Fields under review are published flagged “to be confirmed”.</span>
+          </sc-if>
+          <sc-if value="{{ isPublished }}" hint-placeholder-val="{{ false }}">
+            <button disabled style="height:44px;padding:0 22px;border:1px solid #CFE7D9;border-radius:11px;background:#E2F3EA;color:#1F8A5B;font:600 15px 'Instrument Sans',system-ui,sans-serif;display:flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#1F8A5B" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>Published</button>
+            <span style="font-size:14px;color:#4B5875">Published a moment ago by Carolina Coordination</span>
+            <a href="#1c" style="margin-left:auto;font-size:14px;font-weight:500;color:#1A86C6;text-decoration:none">Import another notice</a>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "show the full post-request flow in <a class="dv-oid" href="#1a">1a</a>" · "a version of <a class="dv-oid" href="#1c">1c</a> with a map preview beside the review" · "high-contrast mode for direct sunlight"</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;coordinatorState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;processing&quot;,&quot;review&quot;,&quot;published&quot;],&quot;default&quot;:&quot;review&quot;,&quot;tsType&quot;:&quot;'processing'|'review'|'published'&quot;,&quot;section&quot;:&quot;Coordinar&quot;},&quot;showRoute&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Mapa&quot;},&quot;calmTiles&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Mapa&quot;}}">
+class Component extends DCLogic {
+  state = { coord: null, requested: false, sheetUp: true };
+  renderVals() {
+    const p = this.props;
+    const coord = this.state.coord ?? p.coordinatorState ?? 'review';
+    const on = 'rgba(15,31,61,.14)', off = 'transparent';
+    return {
+      showRoute: p.showRoute ?? true,
+      calmTiles: p.calmTiles ?? true,
+      isProcessing: coord === 'processing', isReview: coord === 'review', isPublished: coord === 'published', notProcessing: coord !== 'processing',
+      bgProcessing: coord === 'processing' ? on : off, bgReview: coord === 'review' ? on : off, bgPublished: coord === 'published' ? on : off,
+      setProcessing: () => this.setState({ coord: 'processing' }),
+      setReview: () => this.setState({ coord: 'review' }),
+      setPublished: () => this.setState({ coord: 'published' }),
+      approve: () => this.setState({ coord: 'published' }),
+      requested: this.state.requested, notRequested: !this.state.requested,
+      request: () => this.setState({ requested: true }),
+      sheetHeight: this.state.sheetUp ? '64%' : '42%',
+      toggleSheet: (e) => { if (e.target.closest('button,a')) return; this.setState(s => ({ sheetUp: !s.sheetUp })); }
+    };
+  }
+}
+</script>
+</body>
+</html>
