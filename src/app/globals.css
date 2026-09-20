@@ -1,6 +1,79 @@
 @import "tailwindcss";
 
-/* Live "user location" marker on the map. */
+/*
+ * Design tokens. Values follow the design export, with the blue, green, amber text and
+ * placeholder darkened so normal-size text meets WCAG AA (4.5:1) on the warm surfaces.
+ * Token names are a shared contract: add tokens if needed, but do not rename these.
+ */
+@theme {
+  --color-canvas: #faf7f2; /* page background, warm off-white */
+  --color-surface: #fffdfa; /* cards, header, rails */
+  --color-chip: #f1ece3; /* neutral chips and quotes */
+  --color-ink: #0f1f3d; /* primary text, navy */
+  --color-muted: #4b5875; /* secondary text */
+  --color-placeholder: #566178;
+  --color-line: #e8e1d6; /* decorative borders */
+  --color-line-field: #857d6e; /* form-control borders, 3:1 against surfaces */
+
+  --color-action: #156fa8; /* primary actions, links, official-resource accents */
+  --color-action-hover: #105a8a;
+  --color-action-soft: #e4f1fa;
+  --color-accent: #1a86c6; /* decorative blue only: dots and icons, never text */
+
+  --color-review: #7a4e05; /* "Needs review" text */
+  --color-review-mark: #e39b1b; /* "Needs review" dot or icon */
+  --color-review-soft: #fdf8ee;
+  --color-review-line: #f1ddb0;
+
+  --color-success: #17794f; /* publication success only */
+  --color-success-soft: #f4fbf7;
+  --color-success-line: #cfe7d9;
+
+  --color-danger: #a12b1f; /* friendly error state */
+  --color-danger-soft: #fdf3f1;
+  --color-danger-line: #f0cfc9;
+
+  --color-delivery: #6b4fbb; /* reserved for community delivery in a later chunk */
+
+  --radius-control: 11px;
+  --radius-card: 12px;
+  --radius-panel: 14px;
+
+  --shadow-card: 0 1px 2px rgb(15 31 61 / 0.04);
+}
+
+/*
+ * Admin shell only (wrapper div in app/admin/layout.tsx). The resident page at `/` keeps
+ * Tailwind's defaults, so fonts, focus ring and motion rules are scoped here instead of on
+ * html/body. `font-sans` / `font-serif` utilities read these variables, so re-pointing them
+ * inside the shell is enough; the font variables come from next/font on the same wrapper.
+ */
+@layer base {
+  .admin-shell {
+    --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
+    --font-serif: var(--font-dm-serif-display), Georgia, serif;
+    font-family: var(--font-sans);
+  }
+
+  /* Strong, consistent keyboard focus on every interactive element. */
+  .admin-shell :focus-visible {
+    outline: 3px solid var(--color-action);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .admin-shell *,
+    .admin-shell *::before,
+    .admin-shell *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Live "user location" marker on the resident map. */
 .user-location-dot {
   width: 16px;
   height: 16px;
