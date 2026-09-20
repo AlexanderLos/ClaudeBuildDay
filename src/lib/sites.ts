@@ -17,6 +17,8 @@ export type Site = {
   /** The single best demo option. */
   recommended?: boolean;
   note: string;
+  /** Photo shown in the marker popup. */
+  image: string;
 };
 
 export const SITES: Site[] = [
@@ -29,6 +31,7 @@ export const SITES: Site[] = [
     lng: -65.978,
     recommended: true,
     note: "Community coordination. Exact location is confirmed when arranging.",
+    image: "/sites/pr-bus-station-1.jpg",
   },
   {
     id: "escorial",
@@ -38,33 +41,7 @@ export const SITES: Site[] = [
     lat: 18.392,
     lng: -65.962,
     note: "Point listed in an official notice (demo).",
-  },
-  {
-    id: "julia",
-    name: "Julia de Burgos Park cistern",
-    type: "official",
-    municipality: "Carolina",
-    lat: 18.372,
-    lng: -65.985,
-    note: "Point listed in an official notice (demo).",
-  },
-  {
-    id: "islaverde",
-    name: "Isla Verde water truck",
-    type: "official",
-    municipality: "Carolina",
-    lat: 18.443,
-    lng: -66.018,
-    note: "Point listed in an official notice (demo).",
-  },
-  {
-    id: "sabana",
-    name: "Sabana Gardens route",
-    type: "delivery",
-    municipality: "Carolina",
-    lat: 18.425,
-    lng: -66.045,
-    note: "Community coordination. Exact location is confirmed when arranging.",
+    image: "/sites/pr-bus-station-2.jpeg",
   },
   {
     id: "riopiedras",
@@ -74,6 +51,7 @@ export const SITES: Site[] = [
     lat: 18.4,
     lng: -66.05,
     note: "Point listed in an official notice (demo).",
+    image: "/sites/pr-bus-station-3.jpeg",
   },
 ];
 
