@@ -42,3 +42,6 @@ next-env.d.ts
 
 # playwright mcp verification artifacts
 /.playwright-mcp/
+
+# keep the env template tracked; real env files stay ignored by the rule above
+!.env.example

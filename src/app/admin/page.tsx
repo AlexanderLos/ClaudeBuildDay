@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AdminWorkspace } from "@/components/admin/AdminWorkspace";
 
 export const metadata: Metadata = {
-  title: "Admin · Agua Vecina",
+  title: "Admin · Water Neighbor",
   description:
     "Import an official water service notice, review every extracted value, and publish only what you approve.",
 };

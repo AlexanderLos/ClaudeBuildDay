@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Agua Vecina",
-  description: "Clear, local, verified water information for neighbors.",
+  title: "Water Neighbor",
+  description: "Clear, local water information for neighbors, from official AAA notices.",
 };
 
 export default function RootLayout({

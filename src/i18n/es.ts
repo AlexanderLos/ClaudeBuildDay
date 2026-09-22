@@ -3,7 +3,7 @@ import type { Dictionary } from "./index";
 /** Spanish dictionary. Typed against the English shape, so a missing or extra key fails typecheck. */
 export const es: Dictionary = {
   common: {
-    appName: "Agua Vecina",
+    appName: "Water Neighbor",
     prototypeBadge: "Prototipo",
     demoDataBadge: "Datos de demostración",
     skipToContent: "Saltar al contenido",
@@ -18,7 +18,7 @@ export const es: Dictionary = {
     ariaLabel: "Cambiar idioma a English (inglés)",
   },
   home: {
-    heading: "Agua Vecina",
+    heading: "Water Neighbor",
     tagline: "Información de agua clara y cercana, tomada de avisos oficiales.",
     status: "En construcción",
     body: "La experiencia para residentes llegará pronto. Las personas coordinadoras ya pueden importar un aviso oficial.",
@@ -27,7 +27,7 @@ export const es: Dictionary = {
   coordinate: {
     pageTitle: "Importar aviso oficial",
     intro:
-      "Sube el aviso oficial en PDF. Agua Vecina extrae comunidades, fechas y lugares para que los revises antes de publicar.",
+      "Sube el aviso oficial en PDF. Water Neighbor extrae comunidades, fechas y lugares para que los revises antes de publicar.",
     upload: {
       regionLabel: "Carga del aviso",
       dropTitle: "Suelta el PDF aquí",
@@ -40,7 +40,7 @@ export const es: Dictionary = {
       removeFile: "Quitar archivo",
       replaceFile: "Elegir otro archivo",
       extract: "Extraer aviso",
-      privacy: "El PDF se envía a Claude para la extracción y Agua Vecina no lo guarda.",
+      privacy: "El PDF se envía a Claude para la extracción y Water Neighbor no lo guarda.",
     },
     demo: {
       loadSample: "Cargar aviso de muestra",
@@ -131,7 +131,7 @@ export const es: Dictionary = {
       listedInNotice: "Aparece en el aviso oficial de {organization}",
       listedInDemo: "Aparece en el aviso de muestra de demostración",
       disclaimer:
-        "Agua Vecina no confirma que haya agua disponible en este momento en ningún lugar. Consulta el aviso oficial para ver actualizaciones.",
+        "Water Neighbor no confirma que haya agua disponible en este momento en ningún lugar. Consulta el aviso oficial para ver actualizaciones.",
       localOnly: "Guardado solo en este dispositivo. No se envió nada a residentes.",
       backHome: "Ir a Buscar agua",
       importAnother: "Importar otro aviso",

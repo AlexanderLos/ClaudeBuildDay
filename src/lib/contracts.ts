@@ -1,5 +1,5 @@
 /**
- * Shared contracts for Agua Vecina (Chunk 1).
+ * Shared contracts for Water Neighbor (Chunk 1).
  *
  * Truthfulness rules encoded here:
  * - Model output is never "verified". A value is `matched` only when it carries a usable

@@ -6,40 +6,41 @@
  * Token names are a shared contract: add tokens if needed, but do not rename these.
  */
 @theme {
-  --color-canvas: #faf7f2; /* page background, warm off-white */
-  --color-surface: #fffdfa; /* cards, header, rails */
-  --color-chip: #f1ece3; /* neutral chips and quotes */
-  --color-ink: #0f1f3d; /* primary text, navy */
-  --color-muted: #4b5875; /* secondary text */
-  --color-placeholder: #566178;
-  --color-line: #e8e1d6; /* decorative borders */
-  --color-line-field: #857d6e; /* form-control borders, 3:1 against surfaces */
+  /* Retuned to match the resident (/) page: clean sky + slate on white, pill controls. */
+  --color-canvas: #f8fafc; /* page background, slate-50 */
+  --color-surface: #ffffff; /* cards, rails */
+  --color-chip: #f1f5f9; /* neutral chips and quotes, slate-100 */
+  --color-ink: #0f172a; /* primary text, slate-900 */
+  --color-muted: #64748b; /* secondary text, slate-500 */
+  --color-placeholder: #94a3b8; /* slate-400 */
+  --color-line: #e2e8f0; /* decorative borders, slate-200 */
+  --color-line-field: #cbd5e1; /* form-control borders, slate-300 */
 
-  --color-action: #156fa8; /* primary actions, links, official-resource accents */
-  --color-action-hover: #105a8a;
-  --color-action-soft: #e4f1fa;
-  --color-accent: #1a86c6; /* decorative blue only: dots and icons, never text */
+  --color-action: #0284c7; /* primary actions, links — sky-600 */
+  --color-action-hover: #0369a1; /* sky-700 */
+  --color-action-soft: #e0f2fe; /* sky-100 */
+  --color-accent: #0ea5e9; /* decorative blue: dots and icons — sky-500 */
 
-  --color-review: #7a4e05; /* "Needs review" text */
-  --color-review-mark: #e39b1b; /* "Needs review" dot or icon */
-  --color-review-soft: #fdf8ee;
-  --color-review-line: #f1ddb0;
+  --color-review: #92400e; /* "Needs review" text, amber-800 */
+  --color-review-mark: #f59e0b; /* "Needs review" dot or icon, amber-500 */
+  --color-review-soft: #fffbeb; /* amber-50 */
+  --color-review-line: #fde68a; /* amber-200 */
 
-  --color-success: #17794f; /* publication success only */
-  --color-success-soft: #f4fbf7;
-  --color-success-line: #cfe7d9;
+  --color-success: #15803d; /* publication success, green-700 */
+  --color-success-soft: #f0fdf4; /* green-50 */
+  --color-success-line: #bbf7d0; /* green-200 */
 
-  --color-danger: #a12b1f; /* friendly error state */
-  --color-danger-soft: #fdf3f1;
-  --color-danger-line: #f0cfc9;
+  --color-danger: #b91c1c; /* error state, red-700 */
+  --color-danger-soft: #fef2f2; /* red-50 */
+  --color-danger-line: #fecaca; /* red-200 */
 
-  --color-delivery: #6b4fbb; /* reserved for community delivery in a later chunk */
+  --color-delivery: #6b4fbb; /* community delivery accent */
 
-  --radius-control: 11px;
-  --radius-card: 12px;
-  --radius-panel: 14px;
+  --radius-control: 9999px; /* pill buttons + inputs, like the / page */
+  --radius-card: 16px;
+  --radius-panel: 16px;
 
-  --shadow-card: 0 1px 2px rgb(15 31 61 / 0.04);
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.06);
 }
 
 /*
@@ -51,7 +52,8 @@
 @layer base {
   .admin-shell {
     --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
-    --font-serif: var(--font-dm-serif-display), Georgia, serif;
+    /* Match the / page: no serif display; headings use the same sans. */
+    --font-serif: var(--font-instrument-sans), system-ui, sans-serif;
     font-family: var(--font-sans);
   }
 
@@ -60,6 +62,33 @@
     outline: 3px solid var(--color-action);
     outline-offset: 2px;
     border-radius: 4px;
+  }
+
+  /*
+   * Resident page (wrapper div in app/page.tsx). Same rules as `.admin-shell`, but `/` keeps the
+   * DM Serif Display face for `font-serif`. Kept as its own block (not merged into the
+   * `.admin-shell` selectors) so it never collides with edits to the admin rules.
+   */
+  .resident-shell {
+    --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
+    --font-serif: var(--font-dm-serif-display), Georgia, serif;
+    font-family: var(--font-sans);
+  }
+
+  .resident-shell :focus-visible {
+    outline: 3px solid var(--color-action);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .resident-shell *,
+    .resident-shell *::before,
+    .resident-shell *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
